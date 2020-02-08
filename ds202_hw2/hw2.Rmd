@@ -1,0 +1,91 @@
+---
+title: "hw2 solutions"
+author: "Rushal Sohal; github: rushalsohal"
+date: "02/07/2020"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R commands
+1. 24F and 15F to celsius and stored in vector *cel*
+```{r}
+cel <- c((24-32)*5/9, (15-32)*5/9)
+cel
+```
+
+2. Vector *vec200* with even entries as 1 and odd as 3
+
+*Assuming we start counting from 1 and not 0*
+```{r}
+vec200 <- 0
+for (i in 1:200) {
+  if(i%%2==0)
+    vec200[i] = 1
+  else
+    vec200[i] = 3
+}
+vec200
+```
+
+3. perfect squares between 1 and 2001
+```{r}
+numPerfect <- round(sqrt(2001)) - 1
+numPerfect
+```
+
+
+## Cars and mileage
+```{r}
+if(!require('ggplot2'))
+  install.packages('ggplot2')
+```
+
+1. What are the 3 most fuel-efficient models in terms of highway mileage? Storage the data frame (with 3 rows) containing all information of these three cars in a variable named `top3` and print.
+
+**Answer:** 
+*Higher hwy mileage = Better fuel efficiency*
+
+The most-fuel efficient cars are Volkswagen Jetta (manual), Volkswagen New Beetle(manual), and Volkswagen New Beetle(automatic).
+
+There are numerous ways to find the highest value in a column. Nevertheless, I first sorted the column and then picked the top 3 values of hwy mileage (44,44,41). Using these values, I found the car details with a *which* statement.
+```{r}
+tmp <- sort(mpg$hwy, decreasing=TRUE)
+top3 <- mpg[c(which(mpg$hwy == tmp[1]), which(mpg$hwy == tmp[3])),]
+top3
+```
+2. How many different compact models are included in this dataset? Storage the answer in  a variable named `numCompact` and print.
+
+**Answer:** 
+There are 47 different compact models. Using *which*, I found the values in *mpg_class* where the class equaded *compact*
+```{r}
+numCompact <- length(which(mpg$class == 'compact'))
+numCompact
+```
+
+
+3. Create a scatterplot of `hwy` and `cty` and describe the relationship. Why are there so few points visible? Explain your findings.
+
+**Answer:**
+The graph of City vs Highway is a linearly increasing curve (or a strong positive correlation). We don't see a lot of points due to redundancy, i.e., highway and city only have 27 and 21 unique values, respectively (out of 234 data values).
+```{r}
+plot(mpg$hwy, mpg$cty, main="City vs Highway Mileage", xlab="Highway Mileage", ylab="City Mileage", col="red")
+```
+```{r}
+length(unique(mpg$hwy))
+length(unique(mpg$cty))
+```
+
+4. Are cars in 2008 more fuel efficient than cars in 1999? Use graphs *and* summary statistics to answer this question. Explain your findings.
+
+**Answer:**
+*Fuel efficiency is only decided based on hwy mileage*
+
+Looking at the statistics (average) and the graph, we can say cars in 2008 are *2.564%* more efficient than cars of 1999.
+```{r}
+library(dplyr)
+mpg %>% group_by(year) %>% summarise(avg = mean(hwy))
+plot(mpg$year, mpg$hwy, main="Highway Mileage vs Year", xlab="Year", ylab="Highway Mileage", col="blue", type="p")
+```
+
